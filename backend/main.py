@@ -38,15 +38,29 @@ from backend.routes.auth_routes import router as auth_router
 from backend.routes.public_routes import router as public_router
 
 MEDIA_ROOT = Path(__file__).resolve().parent / "media"
+LOGGER = logging.getLogger("apex.backend")
+
+
+def table_exists(sync_connection, table_name: str) -> bool:
+    inspector = inspect(sync_connection)
+    return table_name in inspector.get_table_names()
 
 
 def ensure_runtime_schema(sync_connection) -> None:
-    inspector = inspect(sync_connection)
+    if not table_exists(sync_connection, "products"):
+        LOGGER.warning(
+            "Skipping runtime schema patch because the 'products' table does not exist yet."
+        )
+        return
 
     try:
+        inspector = inspect(sync_connection)
         product_columns = {column["name"] for column in inspector.get_columns("products")}
     except NoSuchTableError:
-        product_columns = set()
+        LOGGER.warning(
+            "Skipping runtime schema patch because the 'products' table was not found."
+        )
+        return
 
     if "custom_category_label" not in product_columns:
         sync_connection.execute(
@@ -81,11 +95,19 @@ async def app_lifespan(_: FastAPI):
         await connection.run_sync(ensure_runtime_schema)
 
     if settings.default_admin_email and settings.default_admin_password:
-        async with async_session_factory() as session:
-            await ensure_default_admin(
-                session,
-                email=settings.default_admin_email,
-                password=settings.default_admin_password,
+        async with engine.begin() as connection:
+            admin_table_exists = await connection.run_sync(table_exists, "admin_users")
+
+        if admin_table_exists:
+            async with async_session_factory() as session:
+                await ensure_default_admin(
+                    session,
+                    email=settings.default_admin_email,
+                    password=settings.default_admin_password,
+                )
+        else:
+            LOGGER.warning(
+                "Skipping default admin bootstrap because the 'admin_users' table does not exist yet."
             )
 
     yield
