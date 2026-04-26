@@ -1,0 +1,75 @@
+﻿<div class="admin-shell">
+  <header class="admin-header">
+    <div>
+      <p class="eyebrow">Panel administrador</p>
+      <h1>Control de catalogo</h1>
+      <p class="subtitle">Acceso directo sin login, basado en el index principal migrado a Angular.</p>
+    </div>
+
+    <a routerLink="/" class="go-store">
+      <i class="fas fa-arrow-left"></i>
+      Volver a tienda
+    </a>
+  </header>
+
+  <section class="stat-grid">
+    <article class="stat-card">
+      <span>Total productos</span>
+      <strong>{{ totalProducts }}</strong>
+    </article>
+
+    <article class="stat-card">
+      <span>Precio promedio</span>
+      <strong>{{ avgPrice }}</strong>
+    </article>
+
+    <article class="stat-card">
+      <span>Productos HOT</span>
+      <strong>{{ hotProducts }}</strong>
+    </article>
+  </section>
+
+  <section class="admin-layout">
+    <article class="panel">
+      <h2>Distribucion por categoria</h2>
+      <div class="category-list">
+        <div class="category-item" *ngFor="let row of categoryRows">
+          <span>{{ row.label }}</span>
+          <strong>{{ row.count }}</strong>
+        </div>
+      </div>
+    </article>
+
+    <article class="panel table-panel">
+      <h2>Inventario principal</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Categoria</th>
+              <th>Precio</th>
+              <th>Badge</th>
+              <th>Rating</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let product of products">
+              <td class="product-cell">
+                <img [src]="product.img" [alt]="product.name" />
+                <div>
+                  <strong>{{ product.name }}</strong>
+                  <p>{{ product.reviews | number }} resenas</p>
+                </div>
+              </td>
+              <td>{{ product.cat }}</td>
+              <td>{{ formatPrice(product.price) }}</td>
+              <td><span class="badge">{{ badgeLabel(product) }}</span></td>
+              <td>{{ '★'.repeat(product.stars) }}{{ '☆'.repeat(5 - product.stars) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+  </section>
+</div>

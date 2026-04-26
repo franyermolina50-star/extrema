@@ -1,0 +1,373 @@
+﻿<div class="apex-store">
+  <nav id="navbar">
+    <a class="nav-logo" href="#" (click)="$event.preventDefault(); scrollToSection('hero')">APEX<span style="color:#fff">⚡</span>NTR</a>
+    <ul class="nav-links" [class.mobile-open]="mobileMenuOpen">
+      <li><a href="#hero" (click)="$event.preventDefault(); scrollToSection('hero')">Inicio</a></li>
+      <li><a href="#galeria" (click)="$event.preventDefault(); scrollToSection('galeria')">Galeria</a></li>
+      <li><a href="#productos" (click)="$event.preventDefault(); scrollToSection('productos')">Productos</a></li>
+      <li><a href="#contenido" (click)="$event.preventDefault(); scrollToSection('contenido')">Contenido</a></li>
+      <li><a href="#footer" (click)="$event.preventDefault(); scrollToSection('footer')">Contacto</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="cart-btn" type="button" (click)="toggleCart()" aria-label="Abrir carrito">
+        <i class="fas fa-shopping-bag"></i>
+        <span class="cart-count">{{ cartCount }}</span>
+      </button>
+      <button class="btn-primary" type="button" (click)="scrollToSection('productos')">Ver Productos</button>
+      <a class="btn-outline admin-link" routerLink="/admin">Admin</a>
+      <button class="hamburger" type="button" (click)="toggleMobile()"><i class="fas fa-bars"></i></button>
+    </div>
+  </nav>
+
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-content">
+      <div class="hero-tag">Suplementacion de elite</div>
+      <h1 class="hero-title">SUPERA <span>TUS</span><br />LIMITES</h1>
+      <p class="hero-sub">Suplementos premium formulados para atletas que no aceptan lo ordinario. Ciencia mas potencia para resultados reales.</p>
+      <div class="hero-btns">
+        <button class="btn-primary" type="button" (click)="scrollToSection('productos')">
+          <i class="fas fa-bolt"></i> Explorar Productos
+        </button>
+        <button class="btn-outline" type="button" (click)="scrollToSection('contenido')">
+          <i class="fas fa-play"></i> Ver Videos
+        </button>
+      </div>
+    </div>
+    <div class="stats-bar">
+      <div class="stat-item"><span class="stat-num">500+</span><span class="stat-label">Productos Premium</span></div>
+      <div class="stat-item"><span class="stat-num">12K+</span><span class="stat-label">Clientes Activos</span></div>
+      <div class="stat-item"><span class="stat-num">98%</span><span class="stat-label">Satisfaccion</span></div>
+      <div class="stat-item"><span class="stat-num">24H</span><span class="stat-label">Envio Express</span></div>
+    </div>
+  </section>
+
+  <section id="galeria">
+    <div class="section-header">
+      <span class="section-tag">Nuestro mundo</span>
+      <h2 class="section-title">GALERIA APEX</h2>
+    </div>
+    <div class="slider-wrapper">
+      <div #sliderTrack class="slider-track" (mousedown)="onSliderMouseDown($event)">
+        <div class="slide" *ngFor="let slide of gallerySlides">
+          <img [src]="slide.img" [alt]="slide.alt" />
+          <div class="slide-overlay">
+            <div class="slide-label">{{ slide.label }}</div>
+            <div class="slide-sub">{{ slide.sub }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="slider-nav">
+        <button type="button" (click)="scrollSlider(-1)"><i class="fas fa-chevron-left"></i></button>
+        <button type="button" (click)="scrollSlider(1)"><i class="fas fa-chevron-right"></i></button>
+      </div>
+    </div>
+  </section>
+
+  <section id="productos">
+    <div class="section-header">
+      <span class="section-tag">Catalogo</span>
+      <h2 class="section-title">NUESTROS PRODUCTOS</h2>
+    </div>
+
+    <div class="filter-tabs">
+      <button
+        *ngFor="let filter of filters"
+        class="filter-tab"
+        type="button"
+        [class.active]="currentFilter === filter.key"
+        (click)="filterProducts(filter.key)"
+      >
+        {{ filter.label }}
+      </button>
+    </div>
+
+    <div class="products-grid">
+      <article class="product-card" *ngFor="let product of filteredProducts" (click)="openModal(product)">
+        <div *ngIf="product.badge" class="product-badge" [class.badge-hot]="product.badge === 'hot'" [class.badge-new]="product.badge === 'new'" [class.badge-sale]="product.badge === 'sale'">
+          {{ badgeLabel(product.badge) }}
+        </div>
+
+        <img class="product-img" [src]="product.img" [alt]="product.name" />
+
+        <div class="product-info">
+          <div class="product-category">{{ categoryLabel(product.cat) }}</div>
+          <div class="product-name">{{ product.name }}</div>
+          <div class="product-stars">{{ '★'.repeat(product.stars) }}{{ '☆'.repeat(5 - product.stars) }}<span>({{ product.reviews | number }})</span></div>
+          <p class="product-desc">{{ shortDescription(product.desc) }}</p>
+
+          <div class="product-price-row">
+            <div>
+              <span class="product-price">{{ formatPrice(product.price) }}</span>
+              <span *ngIf="product.oldPrice" class="price-old">{{ formatPrice(product.oldPrice) }}</span>
+            </div>
+            <button class="add-cart-btn" type="button" (click)="$event.stopPropagation(); addToCart(product)">
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="contenido">
+    <div class="section-header">
+      <span class="section-tag">Educacion</span>
+      <h2 class="section-title">GUIAS Y VIDEOS</h2>
+    </div>
+
+    <div class="content-grid">
+      <article class="content-card" *ngFor="let card of contentCards">
+        <div class="content-thumb">
+          <img [src]="card.image" [alt]="card.title" />
+          <div class="content-video-icon" *ngIf="card.hasVideo"><i class="fas fa-play"></i></div>
+        </div>
+        <div class="content-body">
+          <div class="content-type">{{ card.type }}</div>
+          <div class="content-title">{{ card.title }}</div>
+          <p class="content-excerpt">{{ card.excerpt }}</p>
+          <div class="content-meta">
+            <span><i class="fas fa-clock"></i> {{ card.metaTime }}</span>
+            <span><i class="fas fa-eye"></i> {{ card.metaViews }}</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <footer id="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">APEX⚡NTR</div>
+        <p class="footer-tagline">Suplementos de elite para atletas que buscan superar sus limites. Calidad certificada y resultados consistentes.</p>
+        <div class="footer-social">
+          <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+          <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+        </div>
+      </div>
+
+      <div>
+        <div class="footer-title">Productos</div>
+        <ul class="footer-links">
+          <li><a href="#" (click)="$event.preventDefault()">Proteinas</a></li>
+          <li><a href="#" (click)="$event.preventDefault()">Creatinas</a></li>
+          <li><a href="#" (click)="$event.preventDefault()">Pre-Workout</a></li>
+          <li><a href="#" (click)="$event.preventDefault()">Vitaminas</a></li>
+          <li><a href="#" (click)="$event.preventDefault()">Quemadores</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="footer-title">Informacion</div>
+        <ul class="footer-links">
+          <li><a href="#" (click)="$event.preventDefault()">Sobre Nosotros</a></li>
+          <li><a href="#" (click)="$event.preventDefault()">Blog y Guias</a></li>
+          <li><a href="#" (click)="$event.preventDefault()">Preguntas Frecuentes</a></li>
+          <li><a href="#" (click)="$event.preventDefault()">Politica de Devolucion</a></li>
+          <li><a href="#" (click)="$event.preventDefault()">Terminos y Condiciones</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="footer-title">Contacto</div>
+        <ul class="footer-links">
+          <li><a href="tel:+573000000000"><i class="fas fa-phone" style="color:var(--gold);margin-right:8px"></i>+57 300 000 0000</a></li>
+          <li><a href="mailto:info@apexntr.com"><i class="fas fa-envelope" style="color:var(--gold);margin-right:8px"></i>info@apexntr.com</a></li>
+          <li><a href="#" (click)="$event.preventDefault()"><i class="fas fa-map-marker-alt" style="color:var(--gold);margin-right:8px"></i>Colombia</a></li>
+          <li><a href="https://wa.me/573000000000" style="color:#25D366"><i class="fab fa-whatsapp" style="margin-right:8px"></i>WhatsApp 24/7</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 APEX NUTRITION. Todos los derechos reservados.</div>
+      <div class="payment-icons">
+        <div class="payment-icon"><i class="fas fa-university"></i> Transferencia</div>
+        <div class="payment-icon"><i class="fas fa-credit-card"></i> Credito</div>
+        <div class="payment-icon"><i class="fas fa-mobile-alt"></i> PSE</div>
+        <div class="payment-icon"><i class="fas fa-money-bill-wave"></i> Efectivo</div>
+      </div>
+    </div>
+  </footer>
+
+  <div class="social-float">
+    <a href="https://wa.me/573000000000" class="social-fab fab-wa" target="_blank" rel="noreferrer" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+    <a href="#" class="social-fab fab-fb" target="_blank" rel="noreferrer" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+    <a href="#" class="social-fab fab-ig" target="_blank" rel="noreferrer" title="Instagram"><i class="fab fa-instagram"></i></a>
+    <a href="#" class="social-fab fab-tt" target="_blank" rel="noreferrer" title="TikTok"><i class="fab fa-tiktok"></i></a>
+  </div>
+
+  <div class="overlay-dim" [class.open]="cartOpen" (click)="closeCart()"></div>
+
+  <aside class="cart-drawer" [class.open]="cartOpen">
+    <div class="cart-header">
+      <h2>Tu carrito</h2>
+      <button class="cart-close" type="button" (click)="closeCart()"><i class="fas fa-times"></i></button>
+    </div>
+
+    <div class="cart-items" *ngIf="cart.length; else emptyCart">
+      <div class="cart-item" *ngFor="let item of cart">
+        <img [src]="item.img" [alt]="item.name" />
+        <div class="cart-item-info">
+          <div class="cart-item-name">{{ item.name }}</div>
+          <div class="cart-item-price">{{ formatPrice(item.price * item.qty) }}</div>
+          <div class="cart-item-qty">Cantidad: {{ item.qty }}</div>
+        </div>
+        <button class="cart-item-remove" type="button" (click)="removeFromCart(item.id)"><i class="fas fa-trash-alt"></i></button>
+      </div>
+    </div>
+
+    <ng-template #emptyCart>
+      <div class="cart-items">
+        <div class="cart-empty"><i class="fas fa-shopping-bag"></i><p>Tu carrito esta vacio</p><p style="font-size:0.8rem;margin-top:8px">Agrega productos para comenzar.</p></div>
+      </div>
+    </ng-template>
+
+    <div class="cart-footer" *ngIf="cart.length">
+      <div class="cart-total">
+        <span class="cart-total-label">Total</span>
+        <span class="cart-total-price">{{ formatPrice(cartTotal) }}</span>
+      </div>
+      <button class="btn-primary" type="button" style="width:100%;padding:14px;font-size:1rem;clip-path:none;border-radius:2px" (click)="openCheckout()">
+        <i class="fas fa-lock"></i> Finalizar compra
+      </button>
+    </div>
+  </aside>
+
+  <div class="modal-overlay" [class.open]="productModalOpen" (click)="onOverlayClick($event, 'product')">
+    <div class="modal-box" *ngIf="currentProduct">
+      <button class="modal-close" type="button" (click)="closeModal()"><i class="fas fa-times"></i></button>
+      <div class="modal-grid">
+        <div class="modal-img-side"><img [src]="currentProduct.img" [alt]="currentProduct.name" /></div>
+        <div class="modal-info-side">
+          <div class="modal-cat">{{ categoryLabel(currentProduct.cat) }}</div>
+          <div class="modal-name">{{ currentProduct.name }}</div>
+
+          <div style="display:flex;align-items:baseline;gap:12px;margin:4px 0 16px">
+            <div class="modal-price">{{ formatPrice(currentProduct.price) }}</div>
+            <div style="color:var(--gray);text-decoration:line-through;font-size:0.9rem">{{ currentProduct.oldPrice ? formatPrice(currentProduct.oldPrice) : '' }}</div>
+          </div>
+
+          <div style="color:var(--gold);font-size:0.9rem;margin-bottom:16px">{{ modalStars }} <span style="color:var(--gray);font-family:'Rajdhani';font-size:0.85rem">({{ currentProduct.reviews | number }} resenas)</span></div>
+
+          <div class="modal-tabs">
+            <button class="modal-tab" type="button" [class.active]="activeModalTab === 'descripcion'" (click)="setModalTab('descripcion')">Descripcion</button>
+            <button class="modal-tab" type="button" [class.active]="activeModalTab === 'beneficios'" (click)="setModalTab('beneficios')">Beneficios</button>
+            <button class="modal-tab" type="button" [class.active]="activeModalTab === 'video'" (click)="setModalTab('video')">Video</button>
+          </div>
+
+          <div class="modal-tab-content" [class.active]="activeModalTab === 'descripcion'">
+            <p class="modal-description" *ngIf="activeModalTab === 'descripcion'">{{ currentProduct.desc }}</p>
+          </div>
+
+          <div class="modal-tab-content" [class.active]="activeModalTab === 'beneficios'">
+            <ul class="benefits-list" *ngIf="activeModalTab === 'beneficios'">
+              <li *ngFor="let benefit of currentProduct.benefits">{{ benefit }}</li>
+            </ul>
+          </div>
+
+          <div class="modal-tab-content" [class.active]="activeModalTab === 'video'">
+            <div class="video-wrapper" *ngIf="activeModalTab === 'video'">
+              <div class="video-placeholder">
+                <div class="video-play-icon"><i class="fas fa-play"></i></div>
+                <strong style="color:var(--white);display:block;margin-bottom:4px">{{ currentProduct.videoTitle }}</strong>
+                <p style="font-size:0.82rem">{{ currentProduct.videoDesc }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="qty-row">
+            <span class="qty-label">Cantidad</span>
+            <div class="qty-ctrl">
+              <button type="button" (click)="changeQty(-1)">−</button>
+              <input type="number" [value]="modalQty" min="1" max="99" (input)="setModalQty($event)" />
+              <button type="button" (click)="changeQty(1)">+</button>
+            </div>
+          </div>
+
+          <button class="btn-primary" type="button" style="width:100%;padding:14px;font-size:1rem;clip-path:none;border-radius:2px" (click)="addCurrentProductToCart()">
+            <i class="fas fa-shopping-bag"></i> Agregar al carrito
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="checkout-overlay" [class.open]="checkoutOpen" (click)="onOverlayClick($event, 'checkout')">
+    <div class="checkout-box">
+      <div class="checkout-header">
+        <h2>Pago seguro</h2>
+        <button class="modal-close" type="button" (click)="closeCheckout()"><i class="fas fa-times"></i></button>
+      </div>
+
+      <div class="checkout-body">
+        <div style="margin-bottom:20px">
+          <div class="form-label" style="margin-bottom:12px">Metodo de pago</div>
+          <div class="payment-methods">
+            <button type="button" class="pay-method" [class.selected]="paymentMethod === 'transferencia'" (click)="selectPayment('transferencia')">
+              <i class="fas fa-university"></i><span>Transferencia</span>
+            </button>
+            <button type="button" class="pay-method" [class.selected]="paymentMethod === 'credito'" (click)="selectPayment('credito')">
+              <i class="fas fa-credit-card"></i><span>Credito/Debito</span>
+            </button>
+            <button type="button" class="pay-method" [class.selected]="paymentMethod === 'pse'" (click)="selectPayment('pse')">
+              <i class="fas fa-mobile-alt"></i><span>PSE</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" placeholder="Tu nombre completo" type="text" /></div>
+          <div class="form-group"><label class="form-label">Telefono</label><input class="form-input" placeholder="+57 300..." type="tel" /></div>
+        </div>
+        <div class="form-group"><label class="form-label">Email</label><input class="form-input" placeholder="correo@ejemplo.com" type="email" /></div>
+        <div class="form-group"><label class="form-label">Direccion de envio</label><input class="form-input" placeholder="Calle, numero, barrio, ciudad" type="text" /></div>
+
+        <div *ngIf="paymentMethod === 'transferencia'">
+          <div class="form-label" style="margin-bottom:8px">Datos de transferencia</div>
+          <div class="transfer-info">
+            <p><strong>Banco:</strong> Bancolombia<br />
+            <strong>Tipo:</strong> Cuenta de ahorros<br />
+            <strong>Numero:</strong> 123-456789-00<br />
+            <strong>Titular:</strong> APEX NUTRITION SAS<br />
+            <strong>NIT:</strong> 900.123.456-7<br /><br />
+            Envia el comprobante por WhatsApp para confirmar tu pedido.</p>
+          </div>
+        </div>
+
+        <div *ngIf="paymentMethod === 'credito'">
+          <div class="form-group"><label class="form-label">Numero de tarjeta</label><input class="form-input" placeholder="1234 5678 9012 3456" maxlength="19" (input)="formatCard($event)" type="text" /></div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Vencimiento</label><input class="form-input" placeholder="MM/AA" maxlength="5" type="text" /></div>
+            <div class="form-group"><label class="form-label">CVV</label><input class="form-input" placeholder="123" maxlength="3" type="text" /></div>
+          </div>
+          <div class="form-group"><label class="form-label">Nombre en la tarjeta</label><input class="form-input" placeholder="Nombre como aparece en la tarjeta" type="text" /></div>
+        </div>
+
+        <div *ngIf="paymentMethod === 'pse'">
+          <div class="form-label" style="margin-bottom:8px">Selecciona tu banco</div>
+          <div class="pse-banks">
+            <button type="button" class="bank-option" *ngFor="let bank of pseBanks" [class.selected]="selectedBank === bank" (click)="selectBank(bank)">{{ bank }}</button>
+          </div>
+          <div class="form-group" style="margin-top:16px"><label class="form-label">Cedula / NIT</label><input class="form-input" placeholder="Documento de identidad" type="text" /></div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:28px;padding-top:20px;border-top:1px solid var(--border)">
+          <div>
+            <div style="font-size:0.8rem;color:var(--gray);text-transform:uppercase;letter-spacing:2px">Total a pagar</div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--gold)">{{ formatPrice(cartTotal) }}</div>
+          </div>
+          <button class="btn-primary" type="button" style="padding:14px 32px;font-size:1rem;clip-path:none;border-radius:2px" (click)="processPayment()">
+            <i class="fas fa-lock"></i> Pagar ahora
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" [class.show]="toastVisible">{{ toastMessage }}</div>
+</div>

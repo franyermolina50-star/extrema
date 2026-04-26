@@ -1,0 +1,54 @@
+services:
+  - type: web
+    name: apex-nutrition-api
+    runtime: python
+    plan: free
+    autoDeployTrigger: commit
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: API_PREFIX
+        value: /api/v1
+      - key: SECURE_COOKIES
+        value: "true"
+      - key: COOKIE_SAMESITE
+        value: none
+      - key: AUTO_CREATE_TABLES
+        value: "false"
+      - key: LOGIN_MAX_ATTEMPTS
+        value: "6"
+      - key: LOGIN_WINDOW_SECONDS
+        value: "60"
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: CORS_ORIGINS
+        value: http://localhost:3000,https://apex-nutrition-frontend.onrender.com
+      - key: TRUSTED_HOSTS
+        value: apex-nutrition-api.onrender.com,apex-nutrition-frontend.onrender.com
+      - key: DEFAULT_ADMIN_EMAIL
+        sync: false
+      - key: DEFAULT_ADMIN_PASSWORD
+        sync: false
+
+  - type: web
+    name: apex-nutrition-frontend
+    runtime: node
+    plan: free
+    autoDeployTrigger: commit
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start -- -p $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: 20.19.0
+      - key: NEXT_PUBLIC_API_BASE_URL
+        value: https://apex-nutrition-api.onrender.com/api/v1
+      - key: NEXT_PUBLIC_CSRF_COOKIE_NAME
+        value: apex_csrf_token

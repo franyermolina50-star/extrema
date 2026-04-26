@@ -1,0 +1,157 @@
+.page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(240, 192, 64, 0.22), transparent 32%),
+    #090909;
+  color: #f5f5f5;
+  padding: 1rem;
+}
+
+.card {
+  width: min(520px, 100%);
+  border: 1px solid #2f2f2f;
+  border-radius: 0.85rem;
+  background: rgba(16, 16, 16, 0.95);
+  padding: 1.1rem;
+}
+
+.brandHeader {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.brandLogo {
+  width: 66px;
+  height: 66px;
+  border-radius: 999px;
+  border: 2px solid #f0c040;
+  object-fit: cover;
+  background: #100f0c;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+}
+
+.kicker {
+  margin: 0;
+  color: #f0c040;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+}
+
+.card h1 {
+  margin: 0.22rem 0 0;
+  font-family: var(--font-display), sans-serif;
+  letter-spacing: 2px;
+}
+
+.helper {
+  margin: 0 0 1rem;
+  color: #bdbdbd;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.modeSwitch {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45rem;
+  margin-bottom: 1rem;
+  padding: 0.35rem;
+  border: 1px solid #2f2f2f;
+  border-radius: 999px;
+  background: #141414;
+}
+
+.modeButton {
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: #c0c0c0;
+  padding: 0.7rem 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.modeButtonActive {
+  background: linear-gradient(120deg, #f0c040 0%, #d4a017 100%);
+  color: #101010;
+}
+
+.fieldHint {
+  margin: 0;
+  color: #989898;
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.form {
+  display: grid;
+  gap: 0.72rem;
+}
+
+.form label {
+  display: grid;
+  gap: 0.32rem;
+  color: #cecece;
+  font-size: 0.84rem;
+}
+
+.form input {
+  border: 1px solid #343434;
+  border-radius: 0.45rem;
+  background: #1a1a1a;
+  color: #f5f5f5;
+  padding: 0.6rem 0.62rem;
+}
+
+.form button {
+  border: none;
+  border-radius: 0.45rem;
+  background: linear-gradient(120deg, #f0c040 0%, #d4a017 100%);
+  color: #101010;
+  font-weight: 700;
+  padding: 0.68rem;
+  cursor: pointer;
+}
+
+.form button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.error {
+  margin: 0;
+  color: #ff9f9f;
+  font-size: 0.82rem;
+}
+
+.demoBox {
+  margin-top: 1rem;
+  border: 1px solid #2f2f2f;
+  border-radius: 0.6rem;
+  background: #151515;
+  padding: 0.7rem;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.demoBox p {
+  margin: 0 0 0.3rem;
+  color: #f0c040;
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.demoBox span {
+  color: #cecece;
+  font-size: 0.84rem;
+}

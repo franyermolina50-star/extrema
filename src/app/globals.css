@@ -1,0 +1,36 @@
+:root {
+  color-scheme: dark;
+  --font-display: "Arial Narrow", "Franklin Gothic Medium", "Impact", sans-serif;
+  --font-heading: "Segoe UI Semibold", "Trebuchet MS", "Arial", sans-serif;
+  --font-body: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body), sans-serif;
+  background: #080808;
+  color: #f5f5f5;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
