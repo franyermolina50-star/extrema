@@ -53,12 +53,26 @@ async def ensure_default_admin(
     email: str,
     password: str,
 ) -> bool:
-    existing = await get_admin_by_email(session, email)
+    normalized_email = email.strip().lower()
+    existing = await get_admin_by_email(session, normalized_email)
     if existing is not None:
+        # Keep default admin credentials in sync when configured from env.
+        updated = False
+        if existing.email != normalized_email:
+            existing.email = normalized_email
+            updated = True
+        if not existing.is_active:
+            existing.is_active = True
+            updated = True
+        if not verify_password(password, existing.password_hash):
+            existing.password_hash = hash_password(password)
+            updated = True
+        if updated:
+            await session.commit()
         return False
 
     new_admin = AdminUserModel(
-        email=email.strip().lower(),
+        email=normalized_email,
         password_hash=hash_password(password),
         is_active=True,
     )
