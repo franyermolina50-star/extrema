@@ -183,7 +183,7 @@ venv.bak/
 .env
 .env.*
 .env.local
-.env.local.ejemplo
+.env.ejemplo
 # Spyder project settings
 .spyderproject
 .spyproject
