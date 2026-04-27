@@ -10,8 +10,20 @@ from backend.core.config import get_settings
 
 settings = get_settings()
 
+
+def normalize_database_url(raw_url: str) -> str:
+    """Adapt common Postgres URLs (Render/Supabase) to SQLAlchemy asyncpg."""
+    if raw_url.startswith("postgresql+asyncpg://"):
+        return raw_url
+    if raw_url.startswith("postgres://"):
+        return "postgresql+asyncpg://" + raw_url[len("postgres://") :]
+    if raw_url.startswith("postgresql://"):
+        return "postgresql+asyncpg://" + raw_url[len("postgresql://") :]
+    return raw_url
+
+
 engine = create_async_engine(
-    settings.database_url,
+    normalize_database_url(settings.database_url),
     pool_pre_ping=True,
     poolclass=NullPool,
 )
@@ -34,4 +46,3 @@ async def ping_database() -> bool:
     async with async_session_factory() as session:
         await session.execute(text("SELECT 1"))
     return True
-

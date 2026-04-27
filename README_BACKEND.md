@@ -90,7 +90,7 @@ Admin operaciones (ventas y validaciones):
 
 Este repo ya incluye blueprint:
 
-- `render.yaml` (frontend + backend)
+- `render.yaml` (frontend + backend + PostgreSQL administrado por Render)
 - `Procfile` (arranque backend)
 
 ### Opcion A: Blueprint (recomendada)
@@ -98,7 +98,8 @@ Este repo ya incluye blueprint:
 1. En Render: `New +` -> `Blueprint`.
 2. Conecta el repo.
 3. Render detecta `render.yaml`.
-4. Completa variables marcadas con `sync: false`.
+4. Render crea automaticamente la base `apex-nutrition-db` y enlaza `DATABASE_URL`.
+5. Completa solo variables sensibles pendientes (`DEFAULT_ADMIN_EMAIL`, `DEFAULT_ADMIN_PASSWORD` si las usas).
 
 ### Opcion B: Crear servicios manualmente
 
