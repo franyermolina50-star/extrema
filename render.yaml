@@ -39,9 +39,9 @@ services:
       - key: JWT_SECRET_KEY
         generateValue: true
       - key: CORS_ORIGINS
-        value: http://localhost:3000,https://apex-nutrition-frontend.onrender.com
+        value: http://localhost:3000,https://nutricion-extrema.onrender.com
       - key: TRUSTED_HOSTS
-        value: apex-nutrition-api.onrender.com,apex-nutrition-frontend.onrender.com
+        value: extrema-stcg.onrender.com,nutricion-extrema.onrender.com
       - key: DEFAULT_ADMIN_EMAIL
         sync: false
       - key: DEFAULT_ADMIN_PASSWORD
@@ -59,6 +59,6 @@ services:
       - key: NODE_VERSION
         value: 20.19.0
       - key: NEXT_PUBLIC_API_BASE_URL
-        value: https://apex-nutrition-api.onrender.com/api/v1
+        value: https://extrema-stcg.onrender.com/api/v1
       - key: NEXT_PUBLIC_CSRF_COOKIE_NAME
         value: apex_csrf_token

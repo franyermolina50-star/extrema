@@ -30,6 +30,9 @@ export async function signInAdmin(email: string, password: string): Promise<Sign
     if (error instanceof ApiError) {
       return { ok: false, error: error.message };
     }
+    if (error instanceof Error && error.message.trim()) {
+      return { ok: false, error: error.message };
+    }
     return {
       ok: false,
       error: "No se pudo iniciar sesion. Verifica conexion y credenciales."
@@ -53,6 +56,9 @@ export async function changeAdminCredentials(
     return { ok: true };
   } catch (error) {
     if (error instanceof ApiError) {
+      return { ok: false, error: error.message };
+    }
+    if (error instanceof Error && error.message.trim()) {
       return { ok: false, error: error.message };
     }
     return {

@@ -13,7 +13,10 @@ import {
   VideoContent
 } from "@/types/catalog";
 
-const DEFAULT_API_BASE_URL = "http://localhost:8000/api/v1";
+const DEFAULT_API_BASE_URL =
+  process.env.NODE_ENV === "production"
+    ? "https://extrema-stcg.onrender.com/api/v1"
+    : "http://localhost:8000/api/v1";
 const CSRF_COOKIE_NAME = process.env.NEXT_PUBLIC_CSRF_COOKIE_NAME?.trim() || "apex_csrf_token";
 
 interface AdminIdentity {
@@ -155,16 +158,24 @@ function createHeaders(options: InternalRequestOptions): Headers {
 }
 
 async function executeRequest<T>(path: string, options: InternalRequestOptions): Promise<T> {
-  const response = await fetch(buildApiUrl(path), {
-    method: options.method ?? "GET",
-    credentials: "include",
-    headers: createHeaders(options),
-    body:
-      options.body !== undefined && !(options.body instanceof FormData)
-        ? JSON.stringify(options.body)
-        : (options.body as BodyInit | undefined),
-    cache: "no-store"
-  });
+  let response: Response;
+  try {
+    response = await fetch(buildApiUrl(path), {
+      method: options.method ?? "GET",
+      credentials: "include",
+      headers: createHeaders(options),
+      body:
+        options.body !== undefined && !(options.body instanceof FormData)
+          ? JSON.stringify(options.body)
+          : (options.body as BodyInit | undefined),
+      cache: "no-store"
+    });
+  } catch {
+    throw new ApiError(
+      `No se pudo conectar con la API (${getApiBaseUrl()}). Verifica URL y CORS.`,
+      0
+    );
+  }
 
   if (!response.ok) {
     throw await parseError(response);
