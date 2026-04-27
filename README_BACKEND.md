@@ -98,7 +98,7 @@ Este repo ya incluye blueprint:
 1. En Render: `New +` -> `Blueprint`.
 2. Conecta el repo.
 3. Render detecta `render.yaml`.
-4. Render crea automaticamente la base `apex-nutrition-db` y enlaza `DATABASE_URL`.
+4. Render crea automaticamente la base `extrema-db` y enlaza `DATABASE_URL`.
 5. Completa solo variables sensibles pendientes (`DEFAULT_ADMIN_EMAIL`, `DEFAULT_ADMIN_PASSWORD` si las usas).
 
 ### Opcion B: Crear servicios manualmente
