@@ -76,7 +76,21 @@ let csrfTokenMemory: string | null = null;
 function getApiBaseUrl(): string {
   const configuredBase = process.env.NEXT_PUBLIC_API_BASE_URL?.trim();
   const rawBase = configuredBase || DEFAULT_API_BASE_URL;
-  return rawBase.replace(/\/+$/, "");
+  const normalizedBase = rawBase.replace(/\/+$/, "");
+
+  // In browser production, avoid cross-origin API bases to preserve auth cookies.
+  if (typeof window !== "undefined" && /^https?:\/\//i.test(normalizedBase)) {
+    try {
+      const apiUrl = new URL(normalizedBase);
+      if (apiUrl.origin !== window.location.origin) {
+        return apiUrl.pathname.replace(/\/+$/, "") || "/api/v1";
+      }
+    } catch {
+      return "/api/v1";
+    }
+  }
+
+  return normalizedBase;
 }
 
 function buildApiUrl(path: string): string {
