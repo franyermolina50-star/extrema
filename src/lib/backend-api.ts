@@ -15,7 +15,7 @@ import {
 
 const DEFAULT_API_BASE_URL =
   process.env.NODE_ENV === "production"
-    ? "https://extrema-stcg.onrender.com/api/v1"
+    ? "/api/v1"
     : "http://localhost:8000/api/v1";
 const CSRF_COOKIE_NAME = process.env.NEXT_PUBLIC_CSRF_COOKIE_NAME?.trim() || "apex_csrf_token";
 

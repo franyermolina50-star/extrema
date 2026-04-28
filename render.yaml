@@ -58,7 +58,9 @@ services:
     envVars:
       - key: NODE_VERSION
         value: 20.19.0
+      - key: BACKEND_API_ORIGIN
+        value: https://extrema-stcg.onrender.com
       - key: NEXT_PUBLIC_API_BASE_URL
-        value: https://extrema-stcg.onrender.com/api/v1
+        value: /api/v1
       - key: NEXT_PUBLIC_CSRF_COOKIE_NAME
         value: apex_csrf_token
